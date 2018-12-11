@@ -3,78 +3,43 @@
 
 	<hr>
 
-	Fund Envelope:
-	<textarea id="fundEnvelope">AAAAAAIyL6Gkduy+ia7u4z23/czqPW1LVUV7ZY/93tOi/8+tAAABLAAKruAAAACnAAAAAAAAAAAAAAADAAAAAAAAAAEAAAAA3I5z3ZUBhmUMyz/sr6Qf957Q2/CUAIUanWvncBPdK6AAAAAAAAAAAAc5jO0AAAABAAAAANyOc92VAYZlDMs/7K+kH/ee0NvwlACFGp1r53AT3SugAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAC1sSlIiRErop8SnmAOqS2VyTWZ0P1BIIfOLhweGG24PQAAAAEAAAABAAAAANyOc92VAYZlDMs/7K+kH/ee0NvwlACFGp1r53AT3SugAAAABQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAIAAAABAAAAAgAAAAEAAAACAAAAAAAAAAEAAAAC+gUJtv47bsaomcZLK6bvl9D2rPEg0GNw4RQbvfJ8ntoAAAABAAAAAAAAAAEYbbg9AAAAQC1u4yU7Eqfokq+t3cDLq43k/OXOh1s3DYh6zFOWVm9QZ2RJb22zGv1imGmhA9dpt4DvrvZBM7WIh2tncSoWqgM=</textarea>	
-	<button onClick='parseFundEnvelope()'>Parse Fund Envelope</button>
-	<span id='parsedFundEnvelope'></span>
-	<button onClick='signFundEnvelope()'>Sign and Broadcast Fund Envelope</button>
-	<span id='fundedResponse'></span>
-
-	<hr>
-
-	Refund Envelope:
-	<textarea id="refundEnvelope">AAAAANyOc92VAYZlDMs/7K+kH/ee0NvwlACFGp1r53AT3SugAAAAyAARa8IAAAABAAAAAQAAAABcEAKQAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAABAAAAALWxKUiJESuinxKeYA6pLZXJNZnQ/UEgh84uHB4Ybbg9AAAAAAAAAAABMS1kAAAAAAAAAAgAAAAAAjIvoaR27L6Jru7jPbf9zOo9bUtVRXtlj/3e06L/z60AAAAAAAAAARhtuD0AAABAdMZYnUufv+KvCWZStgioo6CEAczqBH1N1dvS1n54FxmxFGdFg/SaQgo/eRb1KlBvfFBO+BBTUXsHfuHtSl8fCQ==</textarea>	
-	preimage: <input id='preimage'>
-	<button onClick='parseRefundEnvelope()'>Parse Refund Envelope</button>
-	<span id='parsedRefundEnvelope'></span>
-	<button onClick='signRefundEnvelope()'>Sign and Broadcast Refund Envelope</button>
-	<span id='refundedResponse'></span>
+	Envelope:
+	<textarea id="envelope">AAAAAAIyL6Gkduy+ia7u4z23/czqPW1LVUV7ZY/93tOi/8+tAAABLAAKruAAAACnAAAAAAAAAAAAAAADAAAAAAAAAAEAAAAA3I5z3ZUBhmUMyz/sr6Qf957Q2/CUAIUanWvncBPdK6AAAAAAAAAAAAc5jO0AAAABAAAAANyOc92VAYZlDMs/7K+kH/ee0NvwlACFGp1r53AT3SugAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAC1sSlIiRErop8SnmAOqS2VyTWZ0P1BIIfOLhweGG24PQAAAAEAAAABAAAAANyOc92VAYZlDMs/7K+kH/ee0NvwlACFGp1r53AT3SugAAAABQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAIAAAABAAAAAgAAAAEAAAACAAAAAAAAAAEAAAAC+gUJtv47bsaomcZLK6bvl9D2rPEg0GNw4RQbvfJ8ntoAAAABAAAAAAAAAAEYbbg9AAAAQC1u4yU7Eqfokq+t3cDLq43k/OXOh1s3DYh6zFOWVm9QZ2RJb22zGv1imGmhA9dpt4DvrvZBM7WIh2tncSoWqgM=</textarea>	
+	<button onClick='parseEnvelope()'>Parse Envelope</button>
+	<span id='parsedEnvelope'></span>
+	<button onClick='signEnvelope()'>Sign and Broadcast Envelope</button>
+	<span id='broadcastedResponse'></span>
 
 </pre>
 	
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.11.0/stellar-sdk.min.js"></script>
 <script>
-	StellarSdk.Network.useTestNetwork();
-	const server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-	
-	function parseFundEnvelope() {
-		// get from DOM
-		const envelope = document.getElementById('fundEnvelope').innerHTML
-		// parse
-		const parsedEnvelope = JSON.stringify(StellarSdk.xdr.TransactionEnvelope.fromXDR(envelope, 'base64'))
-		// display
-		document.getElementById('parsedFundEnvelope').innerHTML = parsedEnvelope
-	}
+StellarSdk.Network.useTestNetwork();
+const server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
 
-	async function signFundEnvelope() {
-		// get from DOM
-		const secret = document.getElementById('secret').value
-		const envelope = document.getElementById('fundEnvelope').value
-		// get key pair
-		const keyPair = StellarSdk.Keypair.fromSecret(secret);
-		// get tx
-		const txFromEnvelope = new StellarSdk.Transaction(envelope);
-		// sign
-		txFromEnvelope.sign(keyPair);
-		// broadcast
-			const resp = await server.submitTransaction(txFromEnvelope);
-		// display
-		document.getElementById('fundedResponse').innerHTML = JSON.stringify(resp)
-	}
+function parseEnvelope() {
+	// get from DOM
+	const envelope = document.getElementById('envelope').innerHTML
+	// parse
+	const parsedEnvelope = JSON.stringify(StellarSdk.xdr.TransactionEnvelope.fromXDR(envelope, 'base64'))
+	// display
+	document.getElementById('parsedEnvelope').innerHTML = parsedEnvelope
+}
 
-	function parseRefundEnvelope() {
-		// get from DOM
-		const envelope = document.getElementById('refundEnvelope').innerHTML
-		// parse
-		const parsedEnvelope = JSON.stringify(StellarSdk.xdr.TransactionEnvelope.fromXDR(envelope, 'base64'))
-		// display
-		document.getElementById('parsedFundEnvelope').innerHTML = parsedEnvelope
-	}
-
-	async function signRefundEnvelope() {
-		// get from DOM
-		const preimage = document.getElementById('preimage').value
-		const secret = document.getElementById('secret').value
-		const envelope = document.getElementById('refundEnvelope').value
-		// get tx
-		const txFromEnvelope = new StellarSdk.Transaction(envelope);
-		// sign preimage
-		txFromEnvelope.signHashX(preimage)
-		// broadcast
-		const resp = await server.submitTransaction(txFromEnvelope);
-		// display
-		document.getElementById('refundedResponse').innerHTML = JSON.stringify(resp)
-	}
-
+async function signEnvelope() {
+	// get from DOM
+	const secret = document.getElementById('secret').value
+	const envelope = document.getElementById('envelope').value
+	// get key pair
+	const keyPair = StellarSdk.Keypair.fromSecret(secret);
+	// get tx
+	const txFromEnvelope = new StellarSdk.Transaction(envelope);
+	// sign
+	txFromEnvelope.sign(keyPair);
+	// broadcast
+	const resp = await server.submitTransaction(txFromEnvelope);		
+	// display
+	document.getElementById('broadcastedResponse').innerHTML = JSON.stringify(resp)
+}
 
 </script>
